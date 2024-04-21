@@ -30,6 +30,7 @@ void validate_internal_sig(const void *data,
                                struct thread_collection *col) {
     const struct verify_detail *d = data;
 
+    soprintln("validate_internal_sig");
     bool success = lm_validate_signature(d->public_key,
                                          d->message, d->message_len, false,
                                          d->signature, d->signature_len);

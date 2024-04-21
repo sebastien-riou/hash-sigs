@@ -54,6 +54,7 @@ bool lm_ots_validate_signature_compute(
 
     unsigned char Q[MAX_HASH + 2];
     if (message_prehashed) {
+        soprintln("message_prehashed");
         memcpy( Q, message, n );
      } else {
         union hash_context ctx;
@@ -66,16 +67,21 @@ bool lm_ots_validate_signature_compute(
             put_bigendian( prefix + MESG_Q, q, 4 );
             SET_D( prefix + MESG_D, D_MESG );
             memcpy( prefix + MESG_C, C, n );
+            soprint_bytes_sep("unsigned char prefix[]={0x",prefix,MESG_PREFIX_LEN(n),"};\n",", 0x");
             hss_update_hash_context(h, &ctx, prefix, MESG_PREFIX_LEN(n) );
         }
-            /* Then, the message */
+        /* Then, the message */
+        soprint_bytes_sep("unsigned char message[]={0x",message, message_len ,"};\n",", 0x");
         hss_update_hash_context(h, &ctx, message, message_len );
 
         hss_finalize_hash_context( h, &ctx, Q );
     }
+    soprint_bytes_sep("unsigned char digest[]={0x",Q, MAX_HASH ,"};\n",", 0x");
+    //soprint_cfg(0);
 
     /* Append the checksum to the randomized hash */
     put_bigendian( &Q[n], lm_ots_compute_checksum(Q, n, w, ls), 2 );
+    soprint_bytes_sep("unsigned char Q[]={0x",Q, MAX_HASH+2 ,"};\n",", 0x");
 
     /* And, start building the parts for the final hash */
     union hash_context final_ctx; 
@@ -114,6 +120,7 @@ bool lm_ots_validate_signature_compute(
     /* Ok, finalize the public key hash */
     hss_finalize_hash_context( h, &final_ctx, computed_public_key );
 
+    soprint_bytes_sep("unsigned char computed_public_key[]={0x",computed_public_key, MAX_HASH ,"};\n",", 0x");
     /*
      * We succeeded in computing a root value; the caller will need to decide
      * if the root we computed is actually the correct one

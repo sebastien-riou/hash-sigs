@@ -189,6 +189,7 @@ bool hss_validate_signature_finalize(
     unsigned h = ctx->h;
     hss_finalize_hash_context( h, &ctx->hash_ctx, hash );
 
+    soprint_bytes_sep("unsigned char hash[]={0x",hash, 32 ,"};\n",", 0x");
     /* It passes iff the final signature validates */
     if (lm_validate_signature(
             ctx->final_public_key,
