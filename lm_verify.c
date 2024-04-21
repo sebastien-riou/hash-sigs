@@ -82,6 +82,7 @@ bool lm_validate_signature(
     put_bigendian( ots_sig + LEAF_R, node_num, 4 );
     SET_D( ots_sig + LEAF_D, D_LEAF );
     hss_hash_ctx( computed_public_key, h, &ctx, ots_sig, LEAF_LEN(ots_publen) );
+    soprint_bytes_sep("unsigned char computed_public_key2[]={0x",computed_public_key, MAX_HASH ,"};\n",", 0x");
 
     unsigned char prehash[ INTR_MAX_LEN ];
     memcpy( prehash + INTR_I, I, I_LEN );
